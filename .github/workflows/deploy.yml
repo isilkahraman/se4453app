@@ -20,6 +20,13 @@ jobs:
       - name: Login to ACR
         run: |
           echo ${{ secrets.REGISTRY_PASSWORD }} | docker login se4453acr.azurecr.io -u ${{ secrets.REGISTRY_USERNAME }} --password-stdin
+      - name: Cache node modules
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+              ${{ runner.os }}-node-
 
       - name: Build Docker Image
         run: |
@@ -34,3 +41,5 @@ jobs:
         with:
           app-name: se4453app-container
           images: se4453acr.azurecr.io/se4453app:latest
+
+      
